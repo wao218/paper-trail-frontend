@@ -1,7 +1,7 @@
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { ArrowUpCircleIcon } from '@heroicons/react/20/solid';
 import axios from 'axios';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type Message = {
   id: string;
@@ -19,6 +19,11 @@ function App() {
   const [userInput, setUserInput] = useState('');
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -130,6 +135,7 @@ function App() {
             AI is thinking...
           </p>
         )}
+        <div ref={bottomRef} />
       </div>
 
       <form
