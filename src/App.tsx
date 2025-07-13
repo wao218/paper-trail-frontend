@@ -93,6 +93,21 @@ function App() {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+
+      if (loading || !userInput.trim()) {
+        return;
+      }
+
+      const fakeFormEvent = {
+        preventDefault: () => {},
+      } as React.FormEvent<HTMLFormElement>;
+      void handleUserInput(fakeFormEvent);
+    }
+  };
+
   return (
     <main className='flex flex-col h-screen'>
       <header className='flex items-center p-2 shrink-0'>
@@ -158,6 +173,7 @@ function App() {
               textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // grow
             }
           }}
+          onKeyDown={handleKeyDown}
         />
         <div className='mt-1 flex justify-between items-center'>
           <label className='cursor-pointer w-6 h-6'>
