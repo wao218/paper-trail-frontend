@@ -1,7 +1,7 @@
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { ArrowUpCircleIcon } from '@heroicons/react/20/solid';
 import axios from 'axios';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 type Message = {
   id: string;
@@ -17,6 +17,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [userInput, setUserInput] = useState('');
+
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -131,16 +133,22 @@ function App() {
         }}
       >
         <textarea
-          className='w-full resize-none focus:outline-none '
+          className='w-full overflow-y-auto resize-none focus:outline-none max-h-48'
           name='userInput'
           placeholder='Ask anything'
           value={userInput}
+          ref={textareaRef}
+          rows={1}
           onChange={(e) => {
             setUserInput(e.target.value);
+            if (textareaRef.current) {
+              textareaRef.current.style.height = 'auto'; // reset height
+              textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // grow
+            }
           }}
         />
-        <div className='flex justify-between'>
-          <label className='cursor-pointer w-8 h-8'>
+        <div className='mt-1 flex justify-between items-center'>
+          <label className='cursor-pointer w-6 h-6'>
             <input
               type='file'
               name='document'
@@ -154,7 +162,7 @@ function App() {
 
           <button
             type='submit'
-            className='w-9 h-9 disabled:opacity-50'
+            className='w-10 h-10 disabled:opacity-50'
             disabled={loading}
           >
             <ArrowUpCircleIcon />
