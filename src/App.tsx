@@ -2,12 +2,8 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import { ArrowUpCircleIcon } from '@heroicons/react/20/solid';
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
-
-type Message = {
-  id: string;
-  role: 'user' | 'ai';
-  content: string;
-};
+import ChatMessage from './components/ChatMessage';
+import type { Message } from './types';
 
 type ChatResponse = {
   answer: string;
@@ -141,19 +137,9 @@ function App() {
           <div className='flex-1 overflow-y-auto px-4 py-6 space-y-8 invisible-scrollbar w-full'>
             {messages.map((message) => {
               return (
-                <div
-                  key={message.id}
-                  className={`
-                    p-3 rounded-lg break-words max-w-[75%] w-fit
-                    ${
-                      message.role === 'user'
-                        ? 'bg-blue-500 text-white self-end ml-auto'
-                        : 'bg-gray-200 self-start'
-                    }
-                  `}
-                >
-                  {message.content}
-                </div>
+                // ChatMessage component
+                <ChatMessage key={message.id} message={message} />
+                // ChatMessage component
               );
             })}
 
@@ -166,6 +152,7 @@ function App() {
           </div>
         )}
 
+        {/* ChatInput component */}
         <form
           className='mt-3 mb-6 p-4 flex flex-col max-w-3xl w-full mx-auto shrink-0 shadow-md rounded-4xl border border-gray-300'
           onSubmit={(e) => {
@@ -210,6 +197,7 @@ function App() {
             </button>
           </div>
         </form>
+        {/* ChatInput Component */}
       </div>
     </main>
   );
