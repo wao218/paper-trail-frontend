@@ -167,7 +167,7 @@ function App() {
         )}
 
         <form
-          className='mt-3 mb-3 p-4 flex flex-col max-w-3xl w-full mx-auto shrink-0 shadow-md rounded-4xl border border-gray-300'
+          className='mt-3 mb-6 p-4 flex flex-col max-w-3xl w-full mx-auto shrink-0 shadow-md rounded-4xl border border-gray-300'
           onSubmit={(e) => {
             void handleUserInput(e);
           }}
