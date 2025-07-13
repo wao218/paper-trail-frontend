@@ -108,6 +108,8 @@ function App() {
     }
   };
 
+  const isFirstInteraction = messages.length === 0;
+
   return (
     <main className='flex flex-col h-screen'>
       <header className='flex items-center p-2 shrink-0'>
@@ -120,18 +122,28 @@ function App() {
         <p className='ml-2 text-lg font-semibold'>PaperTrail</p>
       </header>
 
-      <div className='flex-1 overflow-y-scroll px-4 py-6 space-y-8 max-w-3xl w-full mx-auto invisible-scrollbar'>
-        {messages.length === 0 && (
+      <div
+        className={`flex-1 flex flex-col max-w-3xl w-full mx-auto
+          ${
+            isFirstInteraction
+              ? 'justify-center items-center text-center space-y-6'
+              : ''
+          }
+        `}
+      >
+        {isFirstInteraction && (
           <h1 className='text-3xl text-neutral-900 mb-6 text-center'>
             Upload a PDF and let's talk about it!
           </h1>
         )}
 
-        {messages.map((message) => {
-          return (
-            <div
-              key={message.id}
-              className={`
+        {!isFirstInteraction && (
+          <div className='flex-1 overflow-y-auto px-4 py-6 space-y-8 invisible-scrollbar w-full'>
+            {messages.map((message) => {
+              return (
+                <div
+                  key={message.id}
+                  className={`
                     p-3 rounded-lg break-words max-w-[75%] w-fit
                     ${
                       message.role === 'user'
@@ -139,64 +151,66 @@ function App() {
                         : 'bg-gray-200 self-start'
                     }
                   `}
-            >
-              {message.content}
-            </div>
-          );
-        })}
+                >
+                  {message.content}
+                </div>
+              );
+            })}
 
-        {loading && (
-          <p className='p-3 rounded-lg bg-gray-100 text-gray-500 max-w-[75%] w-fit self-start italic'>
-            AI is thinking...
-          </p>
+            {loading && (
+              <p className='p-3 rounded-lg bg-gray-100 text-gray-500 max-w-[75%] w-fit self-start italic'>
+                AI is thinking...
+              </p>
+            )}
+            <div ref={bottomRef} />
+          </div>
         )}
-        <div ref={bottomRef} />
-      </div>
 
-      <form
-        className='mt-3 mb-3 p-4 flex flex-col max-w-3xl w-full mx-auto shrink-0 shadow-md rounded-4xl border border-gray-300'
-        onSubmit={(e) => {
-          void handleUserInput(e);
-        }}
-      >
-        <textarea
-          className='w-full overflow-y-auto resize-none focus:outline-none max-h-48'
-          name='userInput'
-          placeholder='Ask anything'
-          value={userInput}
-          ref={textareaRef}
-          rows={1}
-          onChange={(e) => {
-            setUserInput(e.target.value);
-            if (textareaRef.current) {
-              textareaRef.current.style.height = 'auto'; // reset height
-              textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // grow
-            }
+        <form
+          className='mt-3 mb-3 p-4 flex flex-col max-w-3xl w-full mx-auto shrink-0 shadow-md rounded-4xl border border-gray-300'
+          onSubmit={(e) => {
+            void handleUserInput(e);
           }}
-          onKeyDown={handleKeyDown}
-        />
-        <div className='mt-1 flex justify-between items-center'>
-          <label className='cursor-pointer w-6 h-6'>
-            <input
-              type='file'
-              name='document'
-              className='hidden'
-              onChange={(e) => {
-                void handleFileUpload(e);
-              }}
-            />
-            <PlusIcon />
-          </label>
+        >
+          <textarea
+            className='w-full overflow-y-auto resize-none focus:outline-none max-h-48'
+            name='userInput'
+            placeholder='Ask anything'
+            value={userInput}
+            ref={textareaRef}
+            rows={1}
+            onChange={(e) => {
+              setUserInput(e.target.value);
+              if (textareaRef.current) {
+                textareaRef.current.style.height = 'auto'; // reset height
+                textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // grow
+              }
+            }}
+            onKeyDown={handleKeyDown}
+          />
+          <div className='mt-1 flex justify-between items-center'>
+            <label className='cursor-pointer w-6 h-6'>
+              <input
+                type='file'
+                name='document'
+                className='hidden'
+                onChange={(e) => {
+                  void handleFileUpload(e);
+                }}
+              />
+              <PlusIcon />
+            </label>
 
-          <button
-            type='submit'
-            className='w-10 h-10 disabled:opacity-50'
-            disabled={loading}
-          >
-            <ArrowUpCircleIcon />
-          </button>
-        </div>
-      </form>
+            <button
+              type='submit'
+              className='w-10 h-10 disabled:opacity-50'
+              disabled={loading}
+            >
+              <ArrowUpCircleIcon />
+            </button>
+          </div>
+        </form>
+      </div>
     </main>
   );
 }
