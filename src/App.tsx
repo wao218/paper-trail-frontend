@@ -87,84 +87,80 @@ function App() {
   };
 
   return (
-    <main className='h-screen overflow-hidden'>
-      {/* Header section w/ Icon and Title */}
-      <header className='flex items-center ml-2 mt-1'>
+    <main className='flex flex-col h-screen'>
+      <header className='flex items-center p-2 shrink-0'>
         <img
           src='/paper-trail-logo.svg'
           alt='paper trail logo'
           width={35}
           height={35}
         />
-        <p className='ml-1'>PaperTrail</p>
+        <p className='ml-2 text-lg font-semibold'>PaperTrail</p>
       </header>
 
-      {/* Container for everything to center in the screen */}
-      <div className='h-screen w-screen flex justify-center items-center'>
-        {/* Container for text input and where the chat area will eventually be */}
-        <div className='flex-col'>
-          <h1 className='text-3xl text-neutral-900 mb-6'>
+      <div className='flex-1 overflow-y-scroll px-4 py-6 space-y-8 max-w-3xl w-full mx-auto invisible-scrollbar'>
+        {messages.length === 0 && (
+          <h1 className='text-3xl text-neutral-900 mb-6 text-center'>
             Upload a PDF and let's talk about it!
           </h1>
+        )}
 
-          <div>
-            {messages.map((message) => {
-              return (
-                <div
-                  key={message.id}
-                  className={`${
-                    message.role === 'user'
-                      ? 'bg-blue-200 text-right'
-                      : 'bg-gray-200'
-                  }`}
-                >
-                  {message.content}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Container for input controls */}
-          <div>
-            <form
-              onSubmit={(e) => {
-                void handleUserInput(e);
-              }}
+        {messages.map((message) => {
+          return (
+            <div
+              key={message.id}
+              className={`
+                    p-3 rounded-lg break-words max-w-[75%] w-fit
+                    ${
+                      message.role === 'user'
+                        ? 'bg-blue-500 text-white self-end ml-auto'
+                        : 'bg-gray-200 self-start'
+                    }
+                  `}
             >
-              <textarea
-                className='w-full resize-none'
-                name='userInput'
-                placeholder='Ask anything'
-                value={userInput}
-                onChange={(e) => {
-                  setUserInput(e.target.value);
-                }}
-              />
-              <div className='flex justify-between'>
-                <label className='cursor-pointer w-8 h-8'>
-                  <input
-                    type='file'
-                    name='document'
-                    className='hidden'
-                    onChange={(e) => {
-                      void handleFileUpload(e);
-                    }}
-                  />
-                  <PlusIcon />
-                </label>
-
-                <button
-                  type='submit'
-                  className='w-9 h-9 disabled:opacity-50'
-                  disabled={loading}
-                >
-                  <ArrowUpCircleIcon />
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+              {message.content}
+            </div>
+          );
+        })}
       </div>
+
+      <form
+        className='mt-3 mb-3 p-4 flex flex-col max-w-3xl w-full mx-auto shrink-0 shadow-md rounded-4xl border border-gray-300'
+        onSubmit={(e) => {
+          void handleUserInput(e);
+        }}
+      >
+        <textarea
+          className='w-full resize-none focus:outline-none '
+          name='userInput'
+          placeholder='Ask anything'
+          value={userInput}
+          onChange={(e) => {
+            setUserInput(e.target.value);
+          }}
+        />
+        <div className='flex justify-between'>
+          <label className='cursor-pointer w-8 h-8'>
+            <input
+              type='file'
+              name='document'
+              className='hidden'
+              onChange={(e) => {
+                void handleFileUpload(e);
+              }}
+            />
+            <PlusIcon />
+          </label>
+
+          <button
+            type='submit'
+            className='w-9 h-9 disabled:opacity-50'
+            disabled={loading}
+          >
+            <ArrowUpCircleIcon />
+          </button>
+        </div>
+      </form>
     </main>
   );
 }
