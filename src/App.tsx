@@ -124,6 +124,12 @@ function App() {
             </div>
           );
         })}
+
+        {loading && (
+          <p className='p-3 rounded-lg bg-gray-100 text-gray-500 max-w-[75%] w-fit self-start italic'>
+            AI is thinking...
+          </p>
+        )}
       </div>
 
       <form
