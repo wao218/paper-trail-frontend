@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useState } from 'react';
 
 type Message = {
+  id: string;
   role: 'user' | 'ai';
   content: string;
 };
@@ -49,6 +50,7 @@ function App() {
     }
 
     const userMessage: Message = {
+      id: crypto.randomUUID(),
       role: 'user',
       content: userInput.trim(),
     };
@@ -62,6 +64,7 @@ function App() {
       });
 
       const aiMessage: Message = {
+        id: crypto.randomUUID(),
         role: 'ai',
         content: res.data.answer || 'No response..',
       };
@@ -72,6 +75,7 @@ function App() {
       setMessages((prev) => [
         ...prev,
         {
+          id: crypto.randomUUID(),
           role: 'ai',
           content: 'Error getting a response... try again.',
         },
@@ -104,10 +108,10 @@ function App() {
           </h1>
 
           <div>
-            {messages.map((message, idx) => {
+            {messages.map((message) => {
               return (
                 <div
-                  key={idx}
+                  key={message.id}
                   className={`${
                     message.role === 'user'
                       ? 'bg-blue-200 text-right'
