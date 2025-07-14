@@ -4,7 +4,8 @@ import type { Message } from './types';
 import ChatInput from './components/ChatInput';
 
 function App() {
-  const [loading, setLoading] = useState(false);
+  const [isChatLoading, setIsChatLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [uploadStatus, setUploadStatus] = useState<
     'idle' | 'uploading' | 'success' | 'error'
@@ -50,7 +51,7 @@ function App() {
               return <ChatMessage key={message.id} message={message} />;
             })}
 
-            {loading && (
+            {isChatLoading && (
               <p className='p-3 rounded-lg bg-gray-100 text-gray-500 max-w-[75%] w-fit self-start italic'>
                 AI is thinking...
               </p>
@@ -68,8 +69,10 @@ function App() {
         )}
 
         <ChatInput
-          loading={loading}
-          setLoading={setLoading}
+          isChatLoading={isChatLoading}
+          setIsChatLoading={setIsChatLoading}
+          isUploading={isUploading}
+          setIsUploading={setIsUploading}
           messages={messages}
           setMessages={setMessages}
           setUploadStatus={setUploadStatus}

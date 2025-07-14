@@ -5,8 +5,10 @@ import { useRef, useState } from 'react';
 import type { ChatResponse, Message } from '../types';
 
 type ChatInputProps = {
-  loading: boolean;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  isChatLoading: boolean;
+  setIsChatLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  isUploading: boolean;
+  setIsUploading: React.Dispatch<React.SetStateAction<boolean>>;
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   setUploadStatus: React.Dispatch<
@@ -17,8 +19,10 @@ type ChatInputProps = {
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function ChatInput({
-  loading,
-  setLoading,
+  isChatLoading,
+  setIsChatLoading,
+  isUploading,
+  setIsUploading,
   messages,
   setMessages,
   setUploadStatus,
@@ -37,7 +41,7 @@ export default function ChatInput({
     const formData = new FormData();
     formData.append('pdf', file);
     setUploadStatus('uploading');
-    setLoading(true);
+    setIsUploading(true);
 
     try {
       const res = await axios.post(`${API_URL}/upload`, formData, {
@@ -51,7 +55,7 @@ export default function ChatInput({
       setUploadStatus('error');
       console.log('Upload failed:', error);
     } finally {
-      setLoading(false);
+      setIsUploading(false);
       setTimeout(() => {
         setUploadStatus('idle');
       }, 3000);
@@ -72,7 +76,7 @@ export default function ChatInput({
     };
     setMessages((prev) => [...prev, userMessage]);
     setUserInput('');
-    setLoading(true);
+    setIsChatLoading(true);
 
     try {
       const res = await axios.post<ChatResponse>(`${API_URL}/chat`, {
@@ -98,7 +102,7 @@ export default function ChatInput({
       ]);
       console.log(error);
     } finally {
-      setLoading(false);
+      setIsChatLoading(false);
     }
   };
 
@@ -106,7 +110,7 @@ export default function ChatInput({
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
 
-      if (loading || !userInput.trim()) {
+      if (isChatLoading || !userInput.trim()) {
         return;
       }
 
@@ -149,17 +153,17 @@ export default function ChatInput({
             onChange={(e) => {
               void handleFileUpload(e);
             }}
-            disabled={loading}
+            disabled={isUploading}
           />
           <PlusIcon
-            className={`${loading ? 'opacity-50 cursor-default' : ''}`}
+            className={`${isUploading ? 'opacity-50 cursor-default' : ''}`}
           />
         </label>
 
         <button
           type='submit'
           className='w-10 h-10 cursor-pointer disabled:opacity-50 disabled:cursor-default'
-          disabled={loading}
+          disabled={isChatLoading || isUploading}
         >
           <ArrowUpCircleIcon />
         </button>
