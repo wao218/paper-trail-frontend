@@ -6,6 +6,9 @@ import ChatInput from './components/ChatInput';
 function App() {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [uploadStatus, setUploadStatus] = useState<
+    'idle' | 'uploading' | 'success' | 'error'
+  >('idle');
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,11 +59,20 @@ function App() {
           </div>
         )}
 
+        {uploadStatus !== 'idle' && (
+          <div className='text-sm mb-2 px-2 text-gray-500'>
+            {uploadStatus === 'uploading' && 'Uploading document...'}
+            {uploadStatus === 'success' && '✅ Document uploaded successfully'}
+            {uploadStatus === 'error' && '❌ Failed to upload document'}
+          </div>
+        )}
+
         <ChatInput
           loading={loading}
           setLoading={setLoading}
           messages={messages}
           setMessages={setMessages}
+          setUploadStatus={setUploadStatus}
         />
       </div>
     </main>

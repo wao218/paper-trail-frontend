@@ -9,6 +9,9 @@ type ChatInputProps = {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  setUploadStatus: React.Dispatch<
+    React.SetStateAction<'uploading' | 'success' | 'error' | 'idle'>
+  >;
 };
 
 export default function ChatInput({
@@ -16,6 +19,7 @@ export default function ChatInput({
   setLoading,
   messages,
   setMessages,
+  setUploadStatus,
 }: ChatInputProps) {
   const [userInput, setUserInput] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -30,6 +34,7 @@ export default function ChatInput({
 
     const formData = new FormData();
     formData.append('pdf', file);
+    setUploadStatus('uploading');
     setLoading(true);
 
     try {
@@ -38,12 +43,16 @@ export default function ChatInput({
           'Content-Type': 'multipart/form-data',
         },
       });
-
+      setUploadStatus('success');
       console.log('Upload Success:', res.data);
     } catch (error) {
+      setUploadStatus('error');
       console.log('Upload failed:', error);
     } finally {
       setLoading(false);
+      setTimeout(() => {
+        setUploadStatus('idle');
+      }, 3000);
     }
   };
 
