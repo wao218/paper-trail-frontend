@@ -30,6 +30,7 @@ export default function ChatInput({
 
     const formData = new FormData();
     formData.append('pdf', file);
+    setLoading(true);
 
     try {
       const res = await axios.post('http://localhost:3000/upload', formData, {
@@ -41,6 +42,8 @@ export default function ChatInput({
       console.log('Upload Success:', res.data);
     } catch (error) {
       console.log('Upload failed:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -135,13 +138,16 @@ export default function ChatInput({
             onChange={(e) => {
               void handleFileUpload(e);
             }}
+            disabled={loading}
           />
-          <PlusIcon />
+          <PlusIcon
+            className={`${loading ? 'opacity-50 cursor-default' : ''}`}
+          />
         </label>
 
         <button
           type='submit'
-          className='w-10 h-10 disabled:opacity-50'
+          className='w-10 h-10 cursor-pointer disabled:opacity-50 disabled:cursor-default'
           disabled={loading}
         >
           <ArrowUpCircleIcon />
