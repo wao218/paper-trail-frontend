@@ -14,6 +14,8 @@ type ChatInputProps = {
   >;
 };
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function ChatInput({
   loading,
   setLoading,
@@ -38,7 +40,7 @@ export default function ChatInput({
     setLoading(true);
 
     try {
-      const res = await axios.post('http://localhost:3000/upload', formData, {
+      const res = await axios.post(`${API_URL}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -73,7 +75,7 @@ export default function ChatInput({
     setLoading(true);
 
     try {
-      const res = await axios.post<ChatResponse>('http://localhost:3000/chat', {
+      const res = await axios.post<ChatResponse>(`${API_URL}/chat`, {
         question: userMessage.content,
       });
 
